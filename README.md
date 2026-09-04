@@ -34,6 +34,28 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 
 然后新建一个 Codex 任务，让新任务加载新版插件。
 
+## 启用自动更新
+
+完成首次安装后，每位同事只需再运行一次：
+
+```powershell
+& "$env:USERPROFILE\.codex\.tmp\marketplaces\hengping-film-tools\tools\register-auto-update.ps1"
+```
+
+脚本会创建当前用户的 Windows 计划任务，在每次登录 Windows 时和每天 12:00 自动检查 GitHub。检测到新版本后会刷新插件市场并重新安装插件，无需管理员权限。更新会写入：
+
+```text
+%LOCALAPPDATA%\Codex\horizontal-cinematic-prompt-agent-v2\update.log
+```
+
+自动更新完成后，已打开的 Codex 任务不会热更新；新建任务后使用新版。
+
+如需关闭自动更新：
+
+```powershell
+& "$env:USERPROFILE\.codex\.tmp\marketplaces\hengping-film-tools\tools\register-auto-update.ps1" -Remove
+```
+
 ## 维护者同步与发布
 
 `tools/sync-release.ps1` 以桌面工程为内容源，同时更新：
