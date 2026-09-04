@@ -166,12 +166,7 @@
       font-size: 14px;
     }
 
-    .middle {
-      display: grid;
-      grid-template-columns: 1.35fr .65fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
+    .middle { margin-top: 18px; }
 
     .panel {
       padding: 25px;
@@ -182,25 +177,39 @@
 
     .upgrades {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     .upgrade {
-      padding: 15px;
+      min-height: 178px;
+      padding: 20px;
       border: 1px solid var(--line);
       border-radius: 14px;
       background: var(--panel-2);
     }
-    .upgrade b { display: block; margin-bottom: 4px; color: var(--gold); font-size: 15px; }
-    .upgrade span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .upgrade .tag {
+      display: inline-block;
+      margin-bottom: 9px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: var(--gold);
+      background: rgba(243,201,105,.09);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .upgrade b { display: block; margin-bottom: 6px; font-size: 18px; }
+    .upgrade span { display: block; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .upgrade .impact { margin-top: 8px; color: var(--green); font-weight: 750; }
 
     .best {
+      margin-top: 18px;
       background: linear-gradient(155deg, rgba(142,188,255,.10), rgba(129,217,174,.05));
     }
-    .best h2 { margin-bottom: 13px; }
+    .best-layout { display: grid; grid-template-columns: .55fr 1.45fr; gap: 22px; align-items: center; }
+    .best h2 { margin-bottom: 9px; }
     .best p { margin: 0; color: var(--muted); font-size: 14px; }
-    .flow { display: grid; gap: 8px; margin: 17px 0; }
+    .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 10px; }
     .flow-item {
       padding: 11px 13px;
       border: 1px solid var(--line);
@@ -252,7 +261,7 @@
     footer a { color: #9fbfe9; text-decoration: none; }
 
     @media (max-width: 920px) {
-      .hero, .middle { grid-template-columns: 1fr; }
+      .hero, .best-layout { grid-template-columns: 1fr; }
       .steps, .upgrades { grid-template-columns: 1fr; }
       .step { min-height: auto; }
       .bottom, footer { align-items: flex-start; flex-direction: column; }
@@ -316,28 +325,88 @@
       <section class="panel">
         <div class="section-title">
           <h2>1.3 → 2.0 核心升级</h2>
-          <span>更稳、更准、更适合连续制作</span>
+          <span>2.0 不是简单改名，而是把 1.3 整理成可安装、可更新、能按项目调用的完整插件</span>
         </div>
         <div class="upgrades">
-          <div class="upgrade"><b>精确焦段</b><span>逐镜明确焦距、机距、透视与景深，不再只写宽泛景别。</span></div>
-          <div class="upgrade"><b>表演升级</b><span>加入动机、触发、尺度、泪态、倾听与过演控制。</span></div>
-          <div class="upgrade"><b>动作连续</b><span>锁定站位、发力、接触、受力、余势和下一镜终态。</span></div>
-          <div class="upgrade"><b>环境反馈</b><span>风雨雪雾会真实作用于人物、场景、道具与光影。</span></div>
-          <div class="upgrade"><b>多镜合并</b><span>一次 4—15 秒生成可包含连续多镜，减少机械拆条。</span></div>
-          <div class="upgrade"><b>项目正典</b><span>内置《风起玲珑骨》24 集剧本、451 场索引和人物表演圣经。</span></div>
+          <div class="upgrade">
+            <i class="tag">安装与维护</i><b>从本地工程变成正式插件</b>
+            <span>从复制文件、手动打开规则，升级为公开 Git 仓库安装，并支持自动更新。</span>
+            <span class="impact">影响：安装更简单，团队规则更容易保持一致。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">工程结构</i><b>删除重复兼容文件</b>
+            <span>移除重复的 CLAUDE.md，统一由 SKILL.md 负责入口、AGENTS.md 负责主规则。</span>
+            <span class="impact">影响：减少规则重复、互相覆盖和维护遗漏。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">输出结构</i><b>画幅与时长退出模板字段</b>
+            <span>统一为固定约束、素材引用、光影设计、时间轴四区块；画幅与时长在模型界面选择。</span>
+            <span class="impact">影响：提示词更集中，避免重复已有参数。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">镜头语言</i><b>加入精确焦段控制</b>
+            <span>每镜只选一个焦距，并写清机距、透视压缩或延展、景深和合焦结果。</span>
+            <span class="impact">影响：人物比例、空间关系和电影感更稳定。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">生成组织</i><b>按视频条数组织多镜头</b>
+            <span>一条提示词对应一次 4—15 秒生成；连续镜头不超 15 秒时合并，超出才拆条。</span>
+            <span class="impact">影响：不再机械“一镜一条”，衔接和效率更好。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">人物表演</i><b>从表情词库升级为表演逻辑</b>
+            <span>新增目标、阻力、代价、策略、触发和潜台词，并加入景别、时长、倾听和对白反应。</span>
+            <span class="impact">影响：减少假哭、瞪眼、连续点头和堆叠微表情。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">表演尺度</i><b>加入强度与泪态互斥</b>
+            <span>内部使用 L1—L5 控制表演幅度、T0—T4 控制泪态；同一镜头只保留一种泪态。</span>
+            <span class="impact">影响：表演强弱更符合剧情，克制戏不会变成爆发。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">动作连续性</i><b>动作改为完整动力链</b>
+            <span>覆盖起始站位、准备、发力、接触、受力、余势和终点，并明确左右手、支撑脚和道具。</span>
+            <span class="impact">影响：减少瞬移、换手、站位跳变和动作没结果。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">室外环境</i><b>天气必须真正作用于画面</b>
+            <span>风雨雪雾写清触发、持续和回落，并作用于衣发、皮肤、动作、地面、道具与光影。</span>
+            <span class="impact">影响：人物与空间共同响应，天气不再只是背景。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">项目正典</i><b>完整迁入《风起玲珑骨》资料</b>
+            <span>内置 24 集定稿 PDF、24 份逐集文本、451 场索引和人物表演圣经，可按线索反查。</span>
+            <span class="impact">影响：人物关系、伤势、剧情阶段与表演尺度有证据。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">场次记忆</i><b>新增项目内的场次记忆</b>
+            <span>可在当前场次根目录建立场次记忆.md，记录反复验证后的站位、动作、表演和连续性。</span>
+            <span class="impact">影响：返修经验延续到本场下一轮，不污染其他项目。</span>
+          </div>
+          <div class="upgrade">
+            <i class="tag">规则裁决</i><b>固定约束会为戏剧效果让位</b>
+            <span>当空间异变、变身、时间冻结或特殊运镜发生冲突时，删除具体冲突项并说明原因。</span>
+            <span class="impact">影响：保住特效和镜头设计，同时继续控制无关崩坏。</span>
+          </div>
         </div>
       </section>
 
       <section class="panel best">
-        <h2>效果更佳的用法</h2>
-        <p>不要把整集内容混在一个目录里。以“单集单场”为最小制作单位：</p>
-        <div class="flow">
-          <div class="flow-item">建立单集单场项目文件夹</div>
-          <div class="flow-item">放入本场分镜、资产与调整要求</div>
-          <div class="flow-item">让插件建立并维护“场次记忆.md”</div>
-          <div class="flow-item">根据生成结果持续返修提示词</div>
+        <div class="best-layout">
+          <div>
+            <h2>效果更佳的用法</h2>
+            <p>以“单集单场”为最小制作单位，不要把整集内容混在同一个目录里。</p>
+          </div>
+          <div>
+            <div class="flow">
+              <div class="flow-item">建立单集单场项目文件夹</div>
+              <div class="flow-item">放入本场分镜、资产与调整要求</div>
+              <div class="flow-item">让插件建立并维护“场次记忆.md”</div>
+              <div class="flow-item">根据生成结果持续返修提示词</div>
+            </div>
+            <div class="memory">场次记忆只记录本场有效的站位、动作、表演尺度和连续性要求，并且只保存在当前项目里。</div>
+          </div>
         </div>
-        <div class="memory">场次记忆只记录本场有效的站位、动作、表演尺度和连续性要求，并且只保存在当前项目里。</div>
       </section>
     </div>
 
