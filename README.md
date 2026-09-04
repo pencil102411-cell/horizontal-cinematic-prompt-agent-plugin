@@ -58,7 +58,7 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 如果工程不在默认位置，可指定路径：
 
 ```powershell
-.\tools\sync-release.ps1 -ProjectRoot "D:\项目\横屏影视提示词Agent1.3"
+.\tools\sync-release.ps1 -ProjectRoot "D:\项目\横屏影视提示词Agent2.0"
 ```
 
 脚本仅在内容实际变化时更新插件缓存版本。`-Publish` 需要本机已配置 Git 提交身份并能访问远程仓库。
