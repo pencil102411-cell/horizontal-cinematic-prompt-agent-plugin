@@ -3,6 +3,7 @@ Thumbs.db
 Desktop.ini
 *.tmp
 *.log
+.codex-marketplace-install.json
 .idea/
 .vscode/
 __pycache__/

@@ -6,7 +6,19 @@
 - 逐镜精确焦段、景深、机距与透视规则
 - 人物表演、动作戏、特效戏和叙事光影规则
 - 室外风、雨、雪、雾对环境和人物的可见影响
+- 在当前场次项目内建立和维护 `场次记忆.md`
 - 《风起玲珑骨》24 集逐集文本、4 份定稿 PDF、451 场索引和人物表演圣经
+
+## 建立本地场次记忆
+
+在需要制作的场次项目目录中打开 Codex，调用插件后直接说：
+
+```text
+$horizontal-cinematic-prompt-agent-v2
+请根据当前项目里的分镜、资产和补充要求，建立这个场次的记忆文件。
+```
+
+插件会在当前场次项目根目录创建或更新 `场次记忆.md`。文件只保存在该项目中，不会写回插件、上传 Git 或同步到其他场次。
 
 ## 同事安装
 
@@ -92,6 +104,8 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 plugins/horizontal-cinematic-prompt-agent-v2/
   .codex-plugin/plugin.json
   skills/horizontal-cinematic-prompt-agent-v2/
+    skills/场次记忆.md
+    templates/场次记忆模板.md
 tools/sync-release.ps1
 ```
 
