@@ -7,7 +7,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$pluginName = 'horizontal-cinematic-prompt-agent-v1-3'
+$pluginName = 'horizontal-cinematic-prompt-agent-v2'
 $repoRoot = [System.IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $source = [System.IO.Path]::GetFullPath($ProjectRoot)
 $repoSkill = [System.IO.Path]::GetFullPath((Join-Path $repoRoot "plugins\$pluginName\skills\$pluginName"))

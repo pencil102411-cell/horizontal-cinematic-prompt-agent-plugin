@@ -5,10 +5,10 @@
   },
   "plugins": [
     {
-      "name": "horizontal-cinematic-prompt-agent-v1-3",
+      "name": "horizontal-cinematic-prompt-agent-v2",
       "source": {
         "source": "local",
-        "path": "./plugins/horizontal-cinematic-prompt-agent-v1-3"
+        "path": "./plugins/horizontal-cinematic-prompt-agent-v2"
       },
       "policy": {
         "installation": "AVAILABLE",

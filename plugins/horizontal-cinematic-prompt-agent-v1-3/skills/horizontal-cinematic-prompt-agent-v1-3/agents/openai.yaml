@@ -1,7 +1,0 @@
-interface:
-  display_name: "横屏影视提示词 Agent 1.3"
-  short_description: "横屏真人影视分镜、焦段、表演与风起玲珑骨提示词"
-  default_prompt: "使用 $horizontal-cinematic-prompt-agent-v1-3，把我提供的剧本或分镜编译成可直接生成的横屏影视提示词。"
-
-policy:
-  allow_implicit_invocation: true

@@ -1,11 +1,11 @@
 ---
-name: horizontal-cinematic-prompt-agent-v1-3
+name: horizontal-cinematic-prompt-agent-v2
 description: 为横屏真人电影感古装、仙侠、武侠内容生成或返修 Seedance 2.0 视频提示词；在用户给出剧本、分镜、镜头需求，或提到《风起玲珑骨》及其角色、关系、1-24 集剧情时使用。涵盖精确焦段、可执行表演、动作与特效、叙事光影、室外风雨反馈和四区块交付。不得把《风起玲珑骨》正典套用到其他项目。
 ---
 
-# 横屏影视提示词 Agent 1.3
+# 横屏影视提示词 Agent 2.0
 
-开始任务时先完整读取 [AGENTS.md](AGENTS.md)，把它作为本 Skill 的主规则与最终裁决来源。`CLAUDE.md` 是兼容副本，不需要重复读取。
+开始任务时先完整读取 [AGENTS.md](AGENTS.md)，把它作为本 Skill 的主规则与最终裁决来源。
 
 根据输入按需读取资源：
 

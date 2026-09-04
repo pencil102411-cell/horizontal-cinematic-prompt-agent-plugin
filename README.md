@@ -1,4 +1,4 @@
-# 横屏影视提示词 Agent 1.3
+# 横屏影视提示词 Agent 2.0
 
 这是一个供 Codex 直接安装的公开插件市场仓库。插件包含：
 
@@ -14,13 +14,13 @@
 
 ```powershell
 codex plugin marketplace add pencil102411-cell/horizontal-cinematic-prompt-agent-plugin --ref main
-codex plugin add horizontal-cinematic-prompt-agent-v1-3@hengping-film-tools
+codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 ```
 
 安装完成后，新建一个 Codex 任务即可使用：
 
 ```text
-$horizontal-cinematic-prompt-agent-v1-3
+$horizontal-cinematic-prompt-agent-v2
 ```
 
 ## 同事更新
@@ -29,7 +29,7 @@ $horizontal-cinematic-prompt-agent-v1-3
 
 ```powershell
 codex plugin marketplace upgrade hengping-film-tools
-codex plugin add horizontal-cinematic-prompt-agent-v1-3@hengping-film-tools
+codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 ```
 
 然后新建一个 Codex 任务，让新任务加载新版插件。
@@ -67,9 +67,9 @@ codex plugin add horizontal-cinematic-prompt-agent-v1-3@hengping-film-tools
 
 ```text
 .agents/plugins/marketplace.json
-plugins/horizontal-cinematic-prompt-agent-v1-3/
+plugins/horizontal-cinematic-prompt-agent-v2/
   .codex-plugin/plugin.json
-  skills/horizontal-cinematic-prompt-agent-v1-3/
+  skills/horizontal-cinematic-prompt-agent-v2/
 tools/sync-release.ps1
 ```
 
