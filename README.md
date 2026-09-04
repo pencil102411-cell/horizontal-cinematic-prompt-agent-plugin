@@ -1,6 +1,6 @@
 # 横屏影视提示词 Agent 1.3
 
-这是一个供 Codex 安装的私有插件市场仓库。插件包含：
+这是一个供 Codex 直接安装的公开插件市场仓库。插件包含：
 
 - 横屏真人电影感 Seedance 2.0 提示词工作流
 - 逐镜精确焦段、景深、机距与透视规则
@@ -10,14 +10,14 @@
 
 ## 同事安装
 
-仓库是私有仓库。先由仓库管理员在 GitHub 中把同事加入 Collaborators，同事接受邀请后，在 PowerShell 运行：
+无需下载压缩包，也无需添加 Collaborator。直接在 PowerShell 运行：
 
 ```powershell
 codex plugin marketplace add pencil102411-cell/horizontal-cinematic-prompt-agent-plugin --ref main
 codex plugin add horizontal-cinematic-prompt-agent-v1-3@hengping-film-tools
 ```
 
-第一次访问私有仓库时，Git 或 Codex 可能会打开 GitHub 登录窗口。安装完成后，新建一个 Codex 任务即可使用：
+安装完成后，新建一个 Codex 任务即可使用：
 
 ```text
 $horizontal-cinematic-prompt-agent-v1-3
@@ -73,4 +73,4 @@ plugins/horizontal-cinematic-prompt-agent-v1-3/
 tools/sync-release.ps1
 ```
 
-本仓库含项目剧本资料，仅限获授权的团队成员使用和传播。
+本仓库包含完整项目剧本资料。公开访问不代表授权转载、再发布或商业使用。
