@@ -1,0 +1,23 @@
+{
+  "name": "horizontal-cinematic-prompt-agent-v1-3",
+  "version": "1.3.0",
+  "description": "横屏真人电影感 Seedance 提示词插件，包含精确焦段、表演、分镜、动作特效、室外环境反馈和《风起玲珑骨》项目资料。",
+  "author": {
+    "name": "sg"
+  },
+  "keywords": ["Seedance", "横屏影视", "分镜", "电影提示词", "风起玲珑骨"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "横屏影视提示词 Agent 1.3",
+    "shortDescription": "横屏真人影视分镜、焦段、表演与项目正典提示词",
+    "longDescription": "面向 Seedance 2.0 的横屏真人古装、仙侠和武侠提示词工作流。提供四区块交付、逐镜精确焦段、可执行表演、动作与特效、室外风雨反馈，并内置《风起玲珑骨》24 集剧本、451 场索引和人物表演圣经。",
+    "developerName": "sg",
+    "category": "Creative Tools",
+    "capabilities": [],
+    "defaultPrompt": [
+      "把我提供的剧本或分镜编译成横屏真人影视提示词。",
+      "根据《风起玲珑骨》集数和场次生成可执行视频提示词。",
+      "检查这段提示词的焦段、人物表演和室外环境反馈。"
+    ]
+  }
+}
