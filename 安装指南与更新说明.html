@@ -6,16 +6,16 @@
   <title>横屏影视提示词 Agent 2.0｜安装与升级一图说明</title>
   <style>
     :root {
-      --bg: #090b0f;
-      --panel: #131720;
-      --panel-2: #181c24;
-      --line: rgba(255,255,255,.11);
-      --text: #f5f5f3;
-      --muted: #aeb4c0;
-      --gold: #f3c969;
-      --orange: #ed8c59;
-      --green: #81d9ae;
-      --blue: #8ebcff;
+      --bg: #f4f7f8;
+      --panel: #ffffff;
+      --panel-2: #f8fafb;
+      --line: #dce4e8;
+      --text: #17212b;
+      --muted: #667582;
+      --gold: #b56a17;
+      --orange: #e98852;
+      --green: #1f8265;
+      --blue: #316fa7;
     }
 
     * { box-sizing: border-box; }
@@ -24,8 +24,8 @@
       margin: 0;
       color: var(--text);
       background:
-        radial-gradient(circle at 12% 0%, rgba(237,140,89,.18), transparent 31rem),
-        radial-gradient(circle at 93% 12%, rgba(243,201,105,.13), transparent 28rem),
+        radial-gradient(circle at 8% 0%, rgba(238,177,129,.22), transparent 30rem),
+        radial-gradient(circle at 95% 8%, rgba(125,185,201,.18), transparent 30rem),
         var(--bg);
       font-family: "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
       line-height: 1.55;
@@ -49,10 +49,10 @@
     .brand { font-size: 17px; font-weight: 850; letter-spacing: .02em; }
     .version {
       padding: 7px 12px;
-      border: 1px solid rgba(243,201,105,.35);
+      border: 1px solid #e9c88d;
       border-radius: 999px;
       color: var(--gold);
-      background: rgba(243,201,105,.08);
+      background: #fff7e8;
       font-size: 13px;
       font-weight: 800;
     }
@@ -90,14 +90,14 @@
     .repo-box {
       position: relative;
       padding: 22px 92px 22px 22px;
-      border: 1px solid rgba(142,188,255,.28);
+      border: 1px solid #ccdce8;
       border-radius: 18px;
-      background: rgba(7,10,15,.82);
-      box-shadow: 0 22px 55px rgba(0,0,0,.28);
+      background: rgba(255,255,255,.90);
+      box-shadow: 0 18px 45px rgba(42,67,82,.10);
     }
 
     .repo-box small { display: block; margin-bottom: 7px; color: var(--blue); font-weight: 800; }
-    .repo-box code { color: #e7efff; font-family: Consolas, monospace; font-size: 14px; }
+    .repo-box code { color: #24435d; font-family: Consolas, monospace; font-size: 14px; }
     .copy {
       position: absolute;
       right: 14px;
@@ -107,7 +107,7 @@
       border: 1px solid var(--line);
       border-radius: 10px;
       color: var(--text);
-      background: #202735;
+      background: #eef4f7;
       cursor: pointer;
     }
 
@@ -115,7 +115,8 @@
       padding: 26px;
       border: 1px solid var(--line);
       border-radius: 24px;
-      background: linear-gradient(145deg, rgba(243,201,105,.09), rgba(237,140,89,.035));
+      background: rgba(255,255,255,.88);
+      box-shadow: 0 12px 35px rgba(42,67,82,.06);
     }
 
     .section-title {
@@ -138,7 +139,7 @@
       padding: 18px;
       border: 1px solid var(--line);
       border-radius: 17px;
-      background: rgba(19,23,32,.88);
+      background: #f8fafb;
     }
     .num {
       display: grid;
@@ -147,8 +148,8 @@
       margin-bottom: 10px;
       place-items: center;
       border-radius: 50%;
-      color: #19140b;
-      background: var(--gold);
+      color: #ffffff;
+      background: #cc7b26;
       font-size: 13px;
       font-weight: 900;
     }
@@ -161,8 +162,8 @@
       padding: 13px 16px;
       border-left: 3px solid var(--green);
       border-radius: 0 12px 12px 0;
-      color: #dfe9e4;
-      background: rgba(129,217,174,.07);
+      color: #245f4d;
+      background: #edf8f3;
       font-size: 14px;
     }
 
@@ -173,6 +174,7 @@
       border: 1px solid var(--line);
       border-radius: 24px;
       background: var(--panel);
+      box-shadow: 0 12px 35px rgba(42,67,82,.06);
     }
 
     .upgrades {
@@ -194,7 +196,7 @@
       padding: 3px 8px;
       border-radius: 999px;
       color: var(--gold);
-      background: rgba(243,201,105,.09);
+      background: #fff3dd;
       font-size: 12px;
       font-weight: 800;
     }
@@ -204,7 +206,7 @@
 
     .best {
       margin-top: 18px;
-      background: linear-gradient(155deg, rgba(142,188,255,.10), rgba(129,217,174,.05));
+      background: linear-gradient(145deg, #f7fbfd, #f1faf6);
     }
     .best-layout { display: grid; grid-template-columns: .55fr 1.45fr; gap: 22px; align-items: center; }
     .best h2 { margin-bottom: 9px; }
@@ -214,7 +216,7 @@
       padding: 11px 13px;
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: rgba(9,11,15,.55);
+      background: #ffffff;
       font-size: 14px;
       font-weight: 750;
     }
@@ -222,8 +224,8 @@
     .memory {
       padding: 13px 14px;
       border-radius: 12px;
-      color: #e8f7ef;
-      background: rgba(129,217,174,.10);
+      color: #245f4d;
+      background: #e8f5ef;
       font-size: 13px;
     }
 
@@ -234,9 +236,9 @@
       gap: 22px;
       margin-top: 18px;
       padding: 18px 22px;
-      border: 1px solid rgba(243,201,105,.25);
+      border: 1px solid #ead5aa;
       border-radius: 18px;
-      background: rgba(243,201,105,.06);
+      background: #fffaf0;
     }
     .bottom strong { color: var(--gold); }
     .bottom p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
@@ -244,8 +246,8 @@
       flex: 0 0 auto;
       padding: 11px 15px;
       border-radius: 12px;
-      color: #0b1110;
-      background: var(--green);
+      color: #ffffff;
+      background: #27866a;
       font-weight: 900;
       white-space: nowrap;
     }
@@ -255,10 +257,10 @@
       justify-content: space-between;
       gap: 20px;
       padding-top: 20px;
-      color: #777f8d;
+      color: #7c8a95;
       font-size: 12px;
     }
-    footer a { color: #9fbfe9; text-decoration: none; }
+    footer a { color: var(--blue); text-decoration: none; }
 
     @media (max-width: 920px) {
       .hero, .best-layout { grid-template-columns: 1fr; }
@@ -270,7 +272,7 @@
 
     @media print {
       @page { size: A4 landscape; margin: 10mm; }
-      body { background: #090b0f; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      body { background: #ffffff; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .poster { width: 100%; padding: 0; }
       .copy { display: none; }
     }
