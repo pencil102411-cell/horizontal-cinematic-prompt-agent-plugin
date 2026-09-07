@@ -93,8 +93,7 @@ Sync-Tree -From $source -To $directSkill -Expected $directSkill
 Sync-Tree -From $source -To $personalSkill -Expected $personalSkill
 
 if ($contentChanged) {
-    $cachebuster = Get-Date -Format 'yyyyMMddHHmmss'
-    & python $cachebusterScript $repoPlugin --cachebuster $cachebuster
+    & python $cachebusterScript $repoPlugin
     if ($LASTEXITCODE -ne 0) {
         throw '插件版本更新失败。'
     }
