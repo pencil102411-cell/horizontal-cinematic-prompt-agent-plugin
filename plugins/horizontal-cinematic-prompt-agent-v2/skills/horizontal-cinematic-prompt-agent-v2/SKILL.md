@@ -13,7 +13,7 @@ description: 生成、检查和返修横屏真人电影感古装、仙侠、武�
 
 - 生成或返修最终提示词：读取 [templates/标准输出模板.md](templates/标准输出模板.md)
 - 建立、读取或维护场次记忆：读取 [skills/场次记忆.md](skills/场次记忆.md)；新建使用 [templates/场次记忆模板.md](templates/场次记忆模板.md)
-- 动作、表演、特效和镜头问题：选择 `skills/` 中相关模块；同一镜头可组合使用
+- 构图、动作、表演、特效和镜头问题：选择 `skills/` 中相关模块；同一镜头可组合使用
 - 焦距、机距、景深、运镜与灯光：读取 [references/镜头与灯光词典.md](references/镜头与灯光词典.md)
 - 生成时长、平台能力与引用语法：读取 [references/Seedance规范.md](references/Seedance规范.md)
 - 多主体或复杂事件的信息组织：读取 [references/注意力控制法则.md](references/注意力控制法则.md)
