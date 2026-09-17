@@ -1,5 +1,28 @@
 # 横屏影视提示词 Agent 2.0
 
+## 2026-09-17 独立子代理质检更新
+
+版本：`2.2.0+codex.20260917031040`。
+
+- 生成和返修交付前，使用未继承写稿对话的独立上下文子代理审核；主代理负责写稿和修稿。
+- 格式、字数和时间轴由脚本核对，子代理再检查素材、表演、空间和接镜。
+- 在提示词代码块外展示 `【生成前质检】`：通过、未通过、未完成或未运行，并列明检查范围、实际代理和问题。
+- 未运行、失败、结果不完整或稿件变化时不得声称通过；修稿后复检，旧报告不能覆盖新版本。
+- 保留四区块交付和局部返修范围；只有实际检查过的内容才能获得对应结论。
+
+[完整质检规则](plugins/horizontal-cinematic-prompt-agent-v2/skills/horizontal-cinematic-prompt-agent-v2/skills/生成前质检.md)。宿主须提供支持独立上下文的子代理工具；不可用时明确展示未运行。
+
+验证：9 项机械脚本测试通过；本机已实际验证独立审核与跳过审核两条流程。提示词质检不代表实际成片必然成功。
+
+已安装的同事运行：
+
+```powershell
+codex plugin marketplace upgrade hengping-film-tools
+codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
+```
+
+随后新建 Codex 任务加载新版。
+
 这是一个供 Codex 直接安装的公开插件市场仓库。插件包含：
 
 快速说明：[安装与升级一图说明.png](./安装与升级一图说明.png)｜[网页版 HTML](./安装指南与更新说明.html)

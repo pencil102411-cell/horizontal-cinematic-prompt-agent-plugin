@@ -1,7 +1,7 @@
 interface:
   display_name: "横屏影视提示词 Agent 2.0"
-  short_description: "横屏影视提示词、焦段表演与本地场次记忆"
-  default_prompt: "使用 $horizontal-cinematic-prompt-agent-v2，把我提供的剧本或分镜编译成可直接生成的横屏影视提示词。"
+  short_description: "横屏影视提示词、焦段表演、场次记忆与独立子代理生成前质检"
+  default_prompt: "使用 $horizontal-cinematic-prompt-agent-v2，把我提供的剧本或分镜编译成横屏影视提示词，交由独立上下文子代理质检并展示实际结果。"
 
 policy:
   allow_implicit_invocation: true
