@@ -29,7 +29,8 @@ def count_visible(text: str) -> int:
     return sum(not c.isspace() and unicodedata.category(c)[0] not in "PZC" for c in text)
 
 
-def check(raw: bytes, complexity: str, duration: Decimal | None = None) -> dict:
+def check(raw: bytes, complexity: str, duration: Decimal | None = None,
+          allow_user_duration: bool = False) -> dict:
     result = {
         "sha256": hashlib.sha256(raw).hexdigest(),
         "status": "INCOMPLETE",
@@ -37,9 +38,13 @@ def check(raw: bytes, complexity: str, duration: Decimal | None = None) -> dict:
         "complexity": complexity,
         "character_limit": LIMITS[complexity],
         "errors": [],
+        "warnings": [],
         "unchecked": [],
+        "allow_user_duration": allow_user_duration,
     }
-    errors, unchecked = result["errors"], result["unchecked"]
+    errors = result["errors"]
+    warnings = result["warnings"]
+    unchecked = result["unchecked"]
     try:
         text = raw.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
     except UnicodeDecodeError:
@@ -83,7 +88,8 @@ def check(raw: bytes, complexity: str, duration: Decimal | None = None) -> dict:
                 end = stop
             result["end_seconds"] = str(end)
             if not Decimal(4) <= end <= Decimal(15):
-                errors.append(f"总时长 {end} 秒不在本插件的 4—15 秒工作范围")
+                message = f"总时长 {end} 秒不在本插件的 4—15 秒工作范围"
+                (warnings if allow_user_duration else errors).append(message)
             if duration is not None and end != duration:
                 errors.append(f"时间轴终点 {end} 秒与要求 {duration} 秒不一致")
             for line in timeline.splitlines():
@@ -105,11 +111,15 @@ def main() -> int:
     parser.add_argument("prompt", type=Path)
     parser.add_argument("--complexity", required=True, choices=LIMITS)
     parser.add_argument("--duration", type=Decimal)
+    parser.add_argument("--allow-user-duration", action="store_true",
+                        help="允许用户明确指定 4—15 秒范围外时长；风险保留在 warnings")
     args = parser.parse_args()
     try:
-        result = check(args.prompt.read_bytes(), args.complexity, args.duration)
+        result = check(args.prompt.read_bytes(), args.complexity, args.duration,
+                       args.allow_user_duration)
     except OSError as exc:
         result = {"status": "INCOMPLETE", "scope": "mechanical_only", "errors": [],
+                  "warnings": [],
                   "unchecked": [f"无法读取稿件：{exc}"]}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return {"MECHANICAL_OK": 0, "FAIL": 1, "INCOMPLETE": 2}[result["status"]]

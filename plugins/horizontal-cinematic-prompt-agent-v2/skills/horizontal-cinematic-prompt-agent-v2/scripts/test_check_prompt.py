@@ -39,6 +39,26 @@ class Checks(unittest.TestCase):
         self.assertEqual(self.result(PROMPT.replace("4-8s", "4-16s"))["status"], "FAIL")
         self.assertEqual(self.result(PROMPT + "动" * 2001)["status"], "FAIL")
 
+    def test_three_second_duration_fails_by_default(self):
+        short = PROMPT.replace("0-4s", "0-1s").replace("4-8s", "1-3s")
+        result = self.result(short, duration=Decimal(3))
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("4—15" in error for error in result["errors"]))
+
+    def test_user_duration_can_explicitly_allow_three_seconds_with_warning(self):
+        short = PROMPT.replace("0-4s", "0-1s").replace("4-8s", "1-3s")
+        result = self.result(short, duration=Decimal(3), allow_user_duration=True)
+        self.assertEqual(result["status"], "MECHANICAL_OK")
+        self.assertFalse(result["errors"])
+        self.assertTrue(result["warnings"])
+        self.assertTrue(any("4—15" in warning for warning in result["warnings"]))
+
+    def test_user_duration_mismatch_still_fails_when_short_duration_allowed(self):
+        short = PROMPT.replace("0-4s", "0-1s").replace("4-8s", "1-3s")
+        result = self.result(short, duration=Decimal(4), allow_user_duration=True)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("不一致" in error for error in result["errors"]))
+
     def test_missing_duplicate_or_wrong_section_fail(self):
         for invalid in (PROMPT.replace("【光影设计】", "【灯光】"),
                         PROMPT + "【时间轴】\n0-8s：静止。",

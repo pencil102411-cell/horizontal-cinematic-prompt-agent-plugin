@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from check_prompt_batch import run
+from check_prompt_batch import batch_exit_code, run
 
 
 PROMPT = """【固定约束】
@@ -37,6 +37,36 @@ class BatchChecks(unittest.TestCase):
         self.assertEqual([item["status"] for item in results], ["MECHANICAL_OK", "MECHANICAL_OK"])
         self.assertNotEqual(results[0]["sha256"], results[1]["sha256"])
         self.assertEqual(results[0]["visibility"]["status"], "NO_AUTOMATIC_FINDING")
+
+    def test_exit_code_requires_clean_visibility_for_zero(self):
+        clean = [{"status": "MECHANICAL_OK", "visibility": {"status": "NO_AUTOMATIC_FINDING"}}]
+        finding = [{"status": "MECHANICAL_OK", "visibility": {"status": "REVIEW_REQUIRED"}}]
+        incomplete = [{"status": "INCOMPLETE", "visibility": {"status": "NO_AUTOMATIC_FINDING"}}]
+        self.assertEqual(batch_exit_code(clean), 0)
+        self.assertEqual(batch_exit_code(finding), 1)
+        self.assertEqual(batch_exit_code(incomplete), 2)
+
+    def test_exit_code_prioritizes_fail_or_review_over_incomplete(self):
+        mixed = [
+            {"status": "INCOMPLETE", "visibility": {"status": "NO_AUTOMATIC_FINDING"}},
+            {"status": "MECHANICAL_OK", "visibility": {"status": "REVIEW_REQUIRED"}},
+        ]
+        self.assertEqual(batch_exit_code(mixed), 1)
+
+    def test_manifest_item_can_allow_short_user_duration(self):
+        short = PROMPT.replace("0-4s", "0-1s").replace("4-8s", "1-3s")
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shot = root / "shot.txt"
+            shot.write_text(short, encoding="utf-8")
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps([{
+                "id": "short", "path": str(shot), "duration": 3,
+                "allow_user_duration": True,
+            }]), encoding="utf-8")
+            results = run(manifest)
+        self.assertEqual(results[0]["status"], "MECHANICAL_OK")
+        self.assertTrue(results[0]["warnings"])
 
     def test_unreadable_item_is_incomplete_without_stopping_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
