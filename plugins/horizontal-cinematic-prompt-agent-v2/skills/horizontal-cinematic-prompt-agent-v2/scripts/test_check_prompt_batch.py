@@ -68,6 +68,20 @@ class BatchChecks(unittest.TestCase):
         self.assertEqual(results[0]["status"], "MECHANICAL_OK")
         self.assertTrue(results[0]["warnings"])
 
+    def test_allow_user_duration_without_duration_is_incomplete(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shot = root / "shot.txt"
+            shot.write_text(PROMPT, encoding="utf-8")
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps([{
+                "id": "missing-duration", "path": str(shot),
+                "allow_user_duration": True,
+            }]), encoding="utf-8")
+            results = run(manifest)
+        self.assertEqual(results[0]["status"], "INCOMPLETE")
+        self.assertTrue(results[0]["errors"])
+
     def test_unreadable_item_is_incomplete_without_stopping_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

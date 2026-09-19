@@ -59,6 +59,12 @@ class Checks(unittest.TestCase):
         self.assertEqual(result["status"], "FAIL")
         self.assertTrue(any("不一致" in error for error in result["errors"]))
 
+    def test_user_duration_flag_without_explicit_duration_fails(self):
+        short = PROMPT.replace("0-4s", "0-1s").replace("4-8s", "1-3s")
+        result = self.result(short, allow_user_duration=True)
+        self.assertEqual(result["status"], "FAIL")
+        self.assertTrue(any("明确的 duration" in error for error in result["errors"]))
+
     def test_missing_duplicate_or_wrong_section_fail(self):
         for invalid in (PROMPT.replace("【光影设计】", "【灯光】"),
                         PROMPT + "【时间轴】\n0-8s：静止。",

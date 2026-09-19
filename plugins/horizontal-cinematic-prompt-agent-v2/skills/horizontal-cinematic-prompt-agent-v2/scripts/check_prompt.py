@@ -11,9 +11,16 @@ import unicodedata
 from decimal import Decimal
 from pathlib import Path
 
+from audit_fingerprint import build_fingerprint
+
 
 HEADINGS = ("固定约束", "素材引用", "光影设计", "时间轴")
-LIMITS = {"simple": 2000, "complex": 3000, "maximal": 4000}
+CONFIG_PATH = Path(__file__).resolve().parents[1] / "config" / "limits.json"
+LIMIT_CONFIG = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+LIMITS = {key: int(value) for key, value in LIMIT_CONFIG["character_limits"].items()}
+DURATION_MIN = Decimal(str(LIMIT_CONFIG["duration_seconds"]["min"]))
+DURATION_MAX = Decimal(str(LIMIT_CONFIG["duration_seconds"]["max"]))
+RULE_FINGERPRINT = build_fingerprint()["fingerprint"]
 RANGE = re.compile(
     r"^\s*(\d+(?:\.\d+)?)\s*(?:s|秒)?\s*[-—–~～至]\s*"
     r"(\d+(?:\.\d+)?)\s*(?:s|秒)\s*[:：]", re.I | re.M
@@ -41,10 +48,13 @@ def check(raw: bytes, complexity: str, duration: Decimal | None = None,
         "warnings": [],
         "unchecked": [],
         "allow_user_duration": allow_user_duration,
+        "rule_fingerprint": RULE_FINGERPRINT,
     }
     errors = result["errors"]
     warnings = result["warnings"]
     unchecked = result["unchecked"]
+    if allow_user_duration and duration is None:
+        errors.append("允许用户指定时长时必须同时提供明确的 duration")
     try:
         text = raw.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
     except UnicodeDecodeError:
@@ -87,8 +97,8 @@ def check(raw: bytes, complexity: str, duration: Decimal | None = None,
                     errors.append(f"第 {index} 段终点必须大于起点")
                 end = stop
             result["end_seconds"] = str(end)
-            if not Decimal(4) <= end <= Decimal(15):
-                message = f"总时长 {end} 秒不在本插件的 4—15 秒工作范围"
+            if not DURATION_MIN <= end <= DURATION_MAX:
+                message = f"总时长 {end} 秒不在本插件的 {DURATION_MIN}—{DURATION_MAX} 秒工作范围"
                 (warnings if allow_user_duration else errors).append(message)
             if duration is not None and end != duration:
                 errors.append(f"时间轴终点 {end} 秒与要求 {duration} 秒不一致")
@@ -119,7 +129,7 @@ def main() -> int:
                        args.allow_user_duration)
     except OSError as exc:
         result = {"status": "INCOMPLETE", "scope": "mechanical_only", "errors": [],
-                  "warnings": [],
+                  "warnings": [], "rule_fingerprint": RULE_FINGERPRINT,
                   "unchecked": [f"无法读取稿件：{exc}"]}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return {"MECHANICAL_OK": 0, "FAIL": 1, "INCOMPLETE": 2}[result["status"]]

@@ -8,7 +8,7 @@ import sys
 from decimal import Decimal
 from pathlib import Path
 
-from check_prompt import LIMITS, check
+from check_prompt import LIMITS, RULE_FINGERPRINT, check
 from check_visibility_conflicts import inspect as inspect_visibility
 
 
@@ -64,6 +64,7 @@ def run(manifest: Path) -> list[dict]:
         raw_path = item.get("path")
         result = {"id": item.get("id", str(index)), "path": str(raw_path) if raw_path is not None else None,
                   "sha256": None, "scope": "mechanical_only",
+                  "rule_fingerprint": RULE_FINGERPRINT,
                   "errors": [item["_manifest_error"]] if item.get("_manifest_error") else [],
                   "warnings": [],
                   "unchecked": []}
@@ -80,6 +81,8 @@ def run(manifest: Path) -> list[dict]:
             allow_user_duration = item.get("allow_user_duration", False)
             if not isinstance(allow_user_duration, bool):
                 raise ValueError("allow_user_duration 必须是布尔值")
+            if allow_user_duration and duration is None:
+                raise ValueError("allow_user_duration 必须与明确的 duration 一起提供")
             result["path"] = str(path)
             raw = path.read_bytes()
             result.update(check(

@@ -21,7 +21,7 @@
 
 [完整质检规则](plugins/horizontal-cinematic-prompt-agent-v2/skills/horizontal-cinematic-prompt-agent-v2/skills/生成前质检.md)。宿主须提供支持独立上下文的子代理工具；不可用时明确展示未运行。
 
-验证：26 项提示词与可见性测试通过；插件结构验证通过。提示词质检不代表实际成片必然成功。
+验证：运行技能目录下的 unittest 入口可同时检查提示词、批量退出码、跨行可见性和语料校验；提示词质检不代表实际成片必然成功。
 
 已安装的同事运行：
 
@@ -150,6 +150,35 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 
 脚本仅在内容实际变化时更新插件缓存版本。`-Publish` 需要本机已配置 Git 提交身份并能访问远程仓库。
 
+## 维护与验证
+
+仓库根目录是本文件所在目录；技能和脚本位于：
+
+```text
+plugins/horizontal-cinematic-prompt-agent-v2/skills/horizontal-cinematic-prompt-agent-v2/
+```
+
+从任意工作目录运行完整测试：
+
+```powershell
+$pluginRoot = "<仓库根目录>\plugins\horizontal-cinematic-prompt-agent-v2\skills\horizontal-cinematic-prompt-agent-v2"
+python -m unittest discover -s "$pluginRoot\scripts" -p "test_*.py"
+python "$pluginRoot\scripts\verify_corpus.py"
+python "$pluginRoot\scripts\audit_fingerprint.py"
+```
+
+`verify_corpus.py` 是只读校验器：`episodes` 的 `sha256` 证明原始提取文件未变，`scene-index.jsonl` 每条的 `text_sha256` 则按“逐行 strip、删除空行和精确 `<<<PDF_PAGE:nnn>>>` 标记、LF 拼接、UTF-8 SHA-256”计算。当前仓库应得到 24/24 集、451/451 场；校验器不会清洗或覆盖原始 episode 文件。
+
+批量提示词审核命令及退出码：
+
+```powershell
+python "$pluginRoot\scripts\check_prompt_batch.py" "<审核清单.json>"
+```
+
+退出码 `0` 只表示每条机械状态为 `MECHANICAL_OK` 且可见性为 `NO_AUTOMATIC_FINDING`；`1` 表示 `FAIL` 或 `REVIEW_REQUIRED`；`2` 表示 `INCOMPLETE`、空清单或清单解析失败。`0` 不是独立语义质检通过。用户明确要求 3 秒等范围外时长时，清单条目需同时设置 `duration: 3` 和 `allow_user_duration: true`；缺少明确 duration 会保持 `INCOMPLETE`。显式策略只把默认范围错误记录为 warning，仍会检查时间轴终点和独立子代理结果。
+
+每条机械结果包含候选稿 SHA-256 和 `rule_fingerprint`。指纹绑定 SKILL、AGENTS、输出模板、质检指南、可见性指南、Seedance 规范及 `config/limits.json`；正文、用户约束、素材/接点或规则包变化后不得复用旧审核报告。
+
 ## 目录
 
 ```text
@@ -157,6 +186,11 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 plugins/horizontal-cinematic-prompt-agent-v2/
   .codex-plugin/plugin.json
   skills/horizontal-cinematic-prompt-agent-v2/
+    SKILL.md
+    AGENTS.md
+    scripts/
+    config/limits.json
+    references/风起玲珑骨/剧本/
     skills/场次记忆.md
     templates/场次记忆模板.md
 tools/sync-release.ps1

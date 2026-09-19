@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "character_limits": {
+    "simple": 2000,
+    "complex": 3000,
+    "maximal": 4000
+  },
+  "duration_seconds": {
+    "min": 4,
+    "max": 15
+  }
+}

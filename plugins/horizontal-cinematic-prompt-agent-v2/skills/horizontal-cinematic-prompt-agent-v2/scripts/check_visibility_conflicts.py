@@ -12,6 +12,8 @@ import re
 import sys
 from pathlib import Path
 
+from audit_fingerprint import build_fingerprint
+
 
 BACK = re.compile(r"背对镜头|背向镜头|背影|背身|背对摄影机")
 FACE_DETAIL = re.compile(r"面部表情|面部细节|神情|眉毛|眼神|眼睫|瞳孔|眼睛|面容|嘴角|唇形|泪珠|眼泪")
@@ -138,6 +140,7 @@ def inspect(raw: bytes) -> dict:
         "scope": "lexical_visibility_only",
         "findings": [],
         "unchecked": [],
+        "rule_fingerprint": build_fingerprint()["fingerprint"],
     }
     try:
         text = raw.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
@@ -193,6 +196,7 @@ def main() -> int:
         result = inspect(args.prompt.read_bytes())
     except OSError as exc:
         result = {"sha256": None, "status": "INCOMPLETE", "scope": "lexical_visibility_only",
+                  "rule_fingerprint": build_fingerprint()["fingerprint"],
                   "findings": [], "unchecked": [f"无法读取稿件：{exc}"]}
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["status"] == "NO_AUTOMATIC_FINDING" else 1
