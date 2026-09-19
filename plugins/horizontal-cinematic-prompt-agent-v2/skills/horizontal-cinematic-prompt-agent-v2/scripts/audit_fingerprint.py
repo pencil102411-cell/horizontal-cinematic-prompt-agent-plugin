@@ -17,6 +17,10 @@ DEFAULT_RULE_FILES = (
     RULE_ROOT / "skills" / "镜头可见性与矛盾审计.md",
     RULE_ROOT / "references" / "Seedance规范.md",
     RULE_ROOT / "config" / "limits.json",
+    RULE_ROOT / "scripts" / "audit_fingerprint.py",
+    RULE_ROOT / "scripts" / "check_prompt.py",
+    RULE_ROOT / "scripts" / "check_prompt_batch.py",
+    RULE_ROOT / "scripts" / "check_visibility_conflicts.py",
 )
 
 

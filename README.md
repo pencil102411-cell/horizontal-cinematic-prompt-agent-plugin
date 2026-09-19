@@ -177,7 +177,7 @@ python "$pluginRoot\scripts\check_prompt_batch.py" "<审核清单.json>"
 
 退出码 `0` 只表示每条机械状态为 `MECHANICAL_OK` 且可见性为 `NO_AUTOMATIC_FINDING`；`1` 表示 `FAIL` 或 `REVIEW_REQUIRED`；`2` 表示 `INCOMPLETE`、空清单或清单解析失败。`0` 不是独立语义质检通过。用户明确要求 3 秒等范围外时长时，清单条目需同时设置 `duration: 3` 和 `allow_user_duration: true`；缺少明确 duration 会保持 `INCOMPLETE`。显式策略只把默认范围错误记录为 warning，仍会检查时间轴终点和独立子代理结果。
 
-每条机械结果包含候选稿 SHA-256 和 `rule_fingerprint`。指纹绑定 SKILL、AGENTS、输出模板、质检指南、可见性指南、Seedance 规范及 `config/limits.json`；正文、用户约束、素材/接点或规则包变化后不得复用旧审核报告。
+每条机械结果包含候选稿 SHA-256 和 `rule_fingerprint`。指纹绑定 SKILL、AGENTS、输出模板、质检指南、可见性指南、Seedance 规范、`config/limits.json` 及机械检查脚本；正文、用户约束、素材/接点或规则包变化后不得复用旧审核报告。
 
 ## 目录
 
