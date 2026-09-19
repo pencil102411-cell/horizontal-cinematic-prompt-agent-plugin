@@ -1,6 +1,6 @@
 {
   "name": "horizontal-cinematic-prompt-agent-v2",
-  "version": "2.2.0+codex.20260919022425",
+  "version": "2.2.1+codex.20260919184548",
   "description": "横屏真人电影感 Seedance 提示词插件，包含精确焦段、表演、分镜、动作特效、室外环境反馈、本地场次记忆、生成前独立子代理质检和镜头可见性矛盾审计，内置《风起玲珑骨》项目资料。",
   "author": {
     "name": "sg"
