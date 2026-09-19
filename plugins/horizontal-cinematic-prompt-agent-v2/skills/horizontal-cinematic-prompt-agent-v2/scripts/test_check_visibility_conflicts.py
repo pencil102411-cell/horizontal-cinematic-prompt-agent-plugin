@@ -35,6 +35,30 @@ class VisibilityChecks(unittest.TestCase):
         self.assertEqual(result["status"], "REVIEW_REQUIRED")
         self.assertIn("VIS-003", [item["id"] for item in result["findings"]])
 
+    def test_back_and_face_detail_across_lines_requires_review(self):
+        result = inspect(prompt("0-4s：女主背对镜头，\n清晰呈现她的眉毛和面部表情。"))
+        self.assertEqual(result["status"], "REVIEW_REQUIRED")
+        finding = next(item for item in result["findings"] if item["id"] == "VIS-001")
+        self.assertIn("第 8 行", finding["evidence"])
+        self.assertIn("第 9 行", finding["evidence"])
+
+    def test_transition_before_face_detail_does_not_resolve_without_back_to_face_order_error(self):
+        result = inspect(prompt("0-4s：女主背对镜头，随后回头露出正脸。\n镜头读取她的眉毛和面部表情。"))
+        self.assertEqual(result["status"], "NO_AUTOMATIC_FINDING")
+        self.assertNotIn("VIS-001", [item["id"] for item in result["findings"]])
+
+    def test_transition_after_face_detail_still_requires_review(self):
+        result = inspect(prompt("0-4s：女主背对镜头，\n先呈现她的眉毛和面部表情。\n随后回头露出正脸。"))
+        self.assertEqual(result["status"], "REVIEW_REQUIRED")
+        self.assertIn("VIS-001", [item["id"] for item in result["findings"]])
+
+    def test_no_cut_and_cut_across_lines_requires_review(self):
+        result = inspect(prompt("0-4s：固定机位，同镜连续观察两人。\n随后切到眼部特写。"))
+        self.assertEqual(result["status"], "REVIEW_REQUIRED")
+        finding = next(item for item in result["findings"] if item["id"] == "VIS-003")
+        self.assertIn("第 8 行", finding["evidence"])
+        self.assertIn("第 9 行", finding["evidence"])
+
     def test_explicit_turn_can_resolve_back_to_face_transition(self):
         result = inspect(prompt("0-4s：女主背对镜头，随后回头露出正脸和克制的表情。"))
         self.assertEqual(result["status"], "NO_AUTOMATIC_FINDING")
