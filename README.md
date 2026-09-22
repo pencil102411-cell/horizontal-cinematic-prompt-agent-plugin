@@ -168,10 +168,4 @@ plugins/horizontal-cinematic-prompt-agent-v2/
 tools/sync-release.ps1
 ```
 
-本市场还包含独立的 `video-asset-renamer` 插件，提供 Windows 视频素材安全命名和中央 watcher。安装方式：
-
-```powershell
-codex plugin add video-asset-renamer@hengping-film-tools
-```
-
 本仓库包含完整项目剧本资料。公开访问不代表授权转载、再发布或商业使用。
