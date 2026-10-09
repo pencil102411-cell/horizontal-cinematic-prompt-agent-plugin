@@ -1,0 +1,28 @@
+{
+  "name": "hengping-film-tools",
+  "owner": {
+    "name": "sg"
+  },
+  "metadata": {
+    "description": "横屏影视提示词工具集（本地市场，源自 pencil102411-cell/horizontal-cinematic-prompt-agent-plugin）"
+  },
+  "plugins": [
+    {
+      "name": "horizontal-cinematic-prompt-agent-v2",
+      "source": "./plugins/horizontal-cinematic-prompt-agent-v2",
+      "description": "横屏真人电影感 Seedance 2.5 提示词插件，包含精确焦段、表演、分镜、动作特效、室外环境反馈、本地场次记忆和《风起玲珑骨》项目资料。",
+      "category": "Creative Tools",
+      "author": {
+        "name": "sg"
+      },
+      "keywords": [
+        "Seedance",
+        "横屏影视",
+        "分镜",
+        "电影提示词",
+        "风起玲珑骨"
+      ],
+      "version": "3.0.0"
+    }
+  ]
+}
