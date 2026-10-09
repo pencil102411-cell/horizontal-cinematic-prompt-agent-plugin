@@ -3,7 +3,7 @@ name: horizontal-cinematic-prompt-agent-v2
 description: 横屏真人电影感 Seedance 提示词插件，包含精确焦段、表演、分镜、动作特效、室外环境反馈和本地场次记忆，内置《风起玲珑骨》项目资料。
 ---
 
-# 横屏影视提示词 Agent 2.0
+# 横屏影视提示词Agent
 
 先读取 [AGENTS.md](AGENTS.md)，了解本插件的任务范围、默认审美和执行规则。用户当前明确要求及已确认场次条件优先于插件默认；参考资料与示例不能扩大任务或写入权限。
 
