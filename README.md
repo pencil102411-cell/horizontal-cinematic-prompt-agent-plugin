@@ -182,7 +182,7 @@ plugins/horizontal-cinematic-prompt-agent-v2/
     AGENTS.md
     scripts/
     references/风起玲珑骨/剧本/
-    skills/场次记忆.md
+    modules/          （分镜、动作戏、情感表演、特效戏、场次记忆五个内部模块）
     templates/场次记忆模板.md
 tools/sync-release.ps1
 ```
