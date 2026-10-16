@@ -1,5 +1,24 @@
 # 横屏影视提示词Agent
 
+## 2026-10-16 规则结构整理
+
+版本：`3.1.0`。
+
+- 每条规则只放一处，入口、总规则、模板分工清楚；冲突时按 `AGENTS.md`「冲突时听谁的」一份排序处理。
+- 每次交付提示词后附「本轮读取清单」，方便核对 AI 是否真的读了模板和模块。
+- 场次记忆不写进任何宿主程序的全局记忆（用户明确要求的除外）；同一目录可放多场，新增的场次用 `场次记忆-<集场标识>.md`，原有 `场次记忆.md` 不改名。
+- 插件不负责：只要分镜方案、在已生成视频上局部修改或换机位重拍、人物/场景设定图。
+- 内部模块文件夹改名为 `modules/`；语料校验现在也核对定稿 PDF。
+
+已安装的同事运行：
+
+```powershell
+codex plugin marketplace upgrade hengping-film-tools
+codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
+```
+
+随后新建 Codex 任务加载新版。Claude Code 用户运行 `/plugin marketplace update hengping-film-tools` 更新市场，再在 `/plugin` 里更新本插件，然后新开会话。
+
 ## 2026-10-09 Seedance 2.5 升级
 
 版本：`3.0.0`。
@@ -37,14 +56,16 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 
 这是一个供 Codex 直接安装的公开插件市场仓库。插件包含：
 
-快速说明：[安装与升级一图说明.png](./安装与升级一图说明.png)｜[网页版 HTML](./安装指南与更新说明.html)
+快速说明：[安装与升级一图说明.png](./安装与升级一图说明.png)（旧版图示，以网页版和本文件为准）｜[网页版 HTML](./安装指南与更新说明.html)
 
 - 横屏真人电影感 Seedance 2.5 提示词工作流
 - 逐镜精确焦段、景深、机距与透视规则
 - 人物表演动机、尺度、泪态、倾听与过演控制，以及动作戏、特效戏和叙事光影规则
 - 室外风、雨、雪、雾对环境和人物的可见影响
-- 在当前场次项目内建立和维护 `场次记忆.md`
+- 在当前场次项目内建立和维护场次记忆（默认 `场次记忆.md`；同一目录新增的场次用 `场次记忆-<集场标识>.md`）
 - 《风起玲珑骨》24 集逐集文本、4 份定稿 PDF、451 场索引和人物表演圣经
+
+不负责：只要分镜方案、不要提示词的请求；在已生成视频上做局部修改或换机位重拍；人物/场景设定图等图像提示词。
 
 ## 执行方式与创作判断
 
@@ -74,7 +95,7 @@ $horizontal-cinematic-prompt-agent-v2
 请根据当前项目里的分镜、资产和补充要求，建立这个场次的记忆文件。
 ```
 
-插件会在当前场次项目根目录创建或更新 `场次记忆.md`。文件只保存在该项目中，不会写回插件、上传 Git 或同步到其他场次。
+插件会在当前场次项目根目录创建或更新这一场的场次记忆文件（默认 `场次记忆.md`；同一目录已有别的场次时，新建 `场次记忆-<集场标识>.md`）。文件只保存在该项目中，不会写回插件、上传 Git 或同步到其他场次。
 
 ## 同事安装
 
@@ -85,7 +106,14 @@ codex plugin marketplace add pencil102411-cell/horizontal-cinematic-prompt-agent
 codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 ```
 
-安装完成后，新建一个 Codex 任务即可使用：
+Claude Code 用户在 Claude Code 里运行：
+
+```text
+/plugin marketplace add pencil102411-cell/horizontal-cinematic-prompt-agent-plugin
+/plugin install horizontal-cinematic-prompt-agent-v2@hengping-film-tools
+```
+
+Claude Code 装完后新开会话即可使用。Codex 安装完成后，新建一个 Codex 任务即可使用：
 
 ```text
 $horizontal-cinematic-prompt-agent-v2
@@ -151,6 +179,10 @@ codex plugin add horizontal-cinematic-prompt-agent-v2@hengping-film-tools
 .\tools\sync-release.ps1 -ProjectRoot "D:\项目\横屏影视提示词Agent2.0"
 ```
 
+**注意**：3.1.0 的修改是直接在本仓库里完成的，桌面工程没有同步。本脚本会把桌面工程（默认 `桌面\项目分析\横屏影视提示词Agent1.3`，或 `-ProjectRoot` 指定的目录）镜像到仓库和本机安装位置，目标里多出来的文件会被删掉。再次运行前，先删除或清空桌面工程里原来的技能文件，再把仓库里 `plugins/horizontal-cinematic-prompt-agent-v2/skills/horizontal-cinematic-prompt-agent-v2/` 文件夹里的全部内容复制过去（`SKILL.md` 放在桌面工程的根目录），不要合并覆盖；否则旧的 `skills/` 文件夹和旧规则会被同步回来，冲掉 3.1.0 的修改。
+
+本脚本需要 PowerShell 7（`pwsh`）运行；它只会更新 `plugins/horizontal-cinematic-prompt-agent-v2/.codex-plugin/plugin.json` 的版本号。发版时还要手动把 `plugins/horizontal-cinematic-prompt-agent-v2/.claude-plugin/plugin.json` 和根目录 `.claude-plugin/marketplace.json` 的版本号改成新的版本号（每次发版都要变，不带 `+codex` 后缀），否则 Claude Code 用户收不到更新。
+
 脚本仅在内容实际变化时更新插件缓存版本。`-Publish` 需要本机已配置 Git 提交身份并能访问远程仓库。
 
 ## 维护与验证
@@ -176,16 +208,19 @@ python "$pluginRoot\scripts\verify_corpus.py"
 ## 目录
 
 ```text
-.agents/plugins/marketplace.json
+.agents/plugins/marketplace.json      （Codex 插件市场）
+.claude-plugin/marketplace.json       （Claude Code 插件市场）
 plugins/horizontal-cinematic-prompt-agent-v2/
   .codex-plugin/plugin.json
+  .claude-plugin/plugin.json
   skills/horizontal-cinematic-prompt-agent-v2/
-    SKILL.md
-    AGENTS.md
-    scripts/
-    references/风起玲珑骨/剧本/
+    SKILL.md          （入口）
+    AGENTS.md         （总规则）
     modules/          （分镜、动作戏、情感表演、特效戏、场次记忆五个内部模块）
+    references/       （镜头与灯光、Seedance 规范等通用参考，以及 风起玲珑骨/ 剧本和人物表演圣经）
+    templates/标准输出模板.md
     templates/场次记忆模板.md
+    scripts/          （语料校验脚本和测试）
 tools/sync-release.ps1
 ```
 
