@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -47,6 +48,8 @@ def _result(manifest: Path) -> dict[str, Any]:
         "errors": [],
         "warnings": [],
         "stats": {
+            "sources_checked": 0,
+            "sources_ok": 0,
             "episodes_checked": 0,
             "episodes_ok": 0,
             "scenes_checked": 0,
@@ -59,27 +62,61 @@ def _issue(result: dict[str, Any], kind: str, message: str) -> None:
     result[kind].append(message)
 
 
-def _episode_path(corpus_root: Path, value: Any) -> Path:
+def _relative_path(base: Path, value: Any, label: str) -> Path:
+    """Join a manifest path to ``base`` and refuse anything that escapes it."""
+
     if not isinstance(value, str) or not value.strip():
-        raise ValueError("episode file 必须是非空字符串")
+        raise ValueError(f"{label} 必须是非空字符串")
     relative = Path(value)
-    if relative.is_absolute() or ".." in relative.parts:
-        raise ValueError(f"episode file 路径越界：{value}")
-    if relative.parts and relative.parts[0].lower() == "episodes":
-        return corpus_root / relative
-    return corpus_root / "episodes" / relative
+    if not relative.parts:
+        raise ValueError(f"{label} 必须指向文件：{value}")
+    # ``anchor`` also catches drive-less roots such as "/etc" and drive-relative
+    # paths such as "D:x", which ``is_absolute()`` lets through on Windows.
+    if relative.anchor or ".." in relative.parts:
+        raise ValueError(f"{label} 路径越界：{value}")
+    path = base / relative
+    try:
+        path.resolve().relative_to(base.resolve())
+    except ValueError:
+        raise ValueError(f"{label} 路径越界：{value}") from None
+    return path
+
+
+def _prefixed_path(corpus_root: Path, value: Any, folder: str, label: str) -> Path:
+    """Resolve a corpus file listed with or without its folder prefix."""
+
+    path = _relative_path(corpus_root, value, label)
+    if Path(value).parts[0].lower() == folder:
+        return path
+    return _relative_path(corpus_root / folder, value, label)
+
+
+def _episode_path(corpus_root: Path, value: Any) -> Path:
+    return _prefixed_path(corpus_root, value, "episodes", "episode file")
 
 
 def _load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _compare_fields(item: dict[str, Any], actual: dict[str, Any]) -> list[str]:
+    mismatches = []
+    for key, value in actual.items():
+        if key not in item:
+            continue
+        expected = item[key]
+        matches = _hash_matches(expected, value) if key == "sha256" else expected == value
+        if not matches:
+            mismatches.append(f"{key} 期望 {expected!r}，实际 {value!r}")
+    return mismatches
+
+
 def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, Any], int]:
     """Return a machine-readable result and process-style status code.
 
-    Code 0 means every declared hash and scene range matches. Code 1 means
-    readable content disagrees with the manifest. Code 2 means a required file
-    or structure could not be read or parsed.
+    Code 0 means every declared hash, count and scene range matches. Code 1
+    means readable content disagrees with the manifest. Code 2 means a required
+    file or structure could not be read or parsed.
     """
 
     manifest_path = Path(manifest).resolve()
@@ -100,6 +137,38 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
     content_failed = False
     structural_failed = False
     episode_lines: dict[str, list[str]] = {}
+
+    has_sources = "sources" in data
+    sources = data.get("sources", [])
+    if not isinstance(sources, list):
+        result["status"] = "ERROR"
+        _issue(result, "errors", "manifest 的 sources 必须是数组")
+        return result, 2
+
+    for item in sources:
+        result["stats"]["sources_checked"] += 1
+        if not isinstance(item, dict):
+            structural_failed = True
+            _issue(result, "errors", "source 条目必须是对象")
+            continue
+        if not isinstance(item.get("sha256"), str):
+            structural_failed = True
+            _issue(result, "errors", f"定稿 PDF {item.get('file')!r} 缺少 sha256")
+            continue
+        try:
+            path = _prefixed_path(corpus_root, item.get("file"), "originals", "source file")
+            raw = path.read_bytes()
+        except (OSError, ValueError) as exc:
+            structural_failed = True
+            _issue(result, "errors", f"无法读取定稿 PDF {item.get('file')!r}：{exc}")
+            continue
+        mismatches = _compare_fields(item, {"bytes": len(raw), "sha256": _sha256(raw)})
+        if mismatches:
+            content_failed = True
+            for mismatch in mismatches:
+                _issue(result, "errors", f"定稿 PDF {item.get('file')!r}：{mismatch}")
+        else:
+            result["stats"]["sources_ok"] += 1
 
     episodes = data.get("episodes")
     if not isinstance(episodes, list):
@@ -130,14 +199,7 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
             "chars": len(text),
             "lines": len(lines),
         }
-        mismatches = []
-        for key, value in actual.items():
-            if key not in item:
-                continue
-            expected = item[key]
-            matches = _hash_matches(expected, value) if key == "sha256" else expected == value
-            if not matches:
-                mismatches.append(f"{key} 期望 {expected!r}，实际 {value!r}")
+        mismatches = _compare_fields(item, actual)
         if mismatches:
             content_failed = True
             for mismatch in mismatches:
@@ -151,11 +213,11 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
         _issue(result, "errors", "manifest 缺少 scene_index.file")
         return result, 2
 
-    index_path = corpus_root / scene_index["file"]
     try:
+        index_path = _relative_path(corpus_root, scene_index["file"], "scene_index.file")
         index_raw = index_path.read_bytes()
         index_text = index_raw.decode("utf-8")
-    except (OSError, UnicodeError) as exc:
+    except (OSError, UnicodeError, ValueError) as exc:
         result["status"] = "ERROR"
         _issue(result, "errors", f"无法读取 scene index：{exc}")
         return result, 2
@@ -165,6 +227,8 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
         content_failed = True
         _issue(result, "errors", "scene index sha256 与 manifest 不一致")
 
+    scenes_per_episode: Counter[Any] = Counter()
+    index_rows_failed = False
     for line_number, raw_line in enumerate(index_text.splitlines(), 1):
         if not raw_line.strip():
             continue
@@ -173,6 +237,7 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
             scene = json.loads(raw_line)
             if not isinstance(scene, dict):
                 raise ValueError("场次记录必须是对象")
+            scenes_per_episode[scene.get("episode")] += 1
             source_file = scene["source_file"]
             start_line = scene["start_line"]
             end_line = scene["end_line"]
@@ -202,7 +267,33 @@ def verify_manifest(manifest: Path | str = DEFAULT_MANIFEST) -> tuple[dict[str, 
                 result["stats"]["scenes_ok"] += 1
         except (KeyError, OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
             structural_failed = True
+            index_rows_failed = True
             _issue(result, "errors", f"scene-index 第 {line_number} 行无效：{exc}")
+
+    declared_counts = {
+        "episode_count": (data.get("episode_count"), len(episodes)),
+        "scene_count": (data.get("scene_count"), result["stats"]["scenes_checked"]),
+    }
+    if has_sources:
+        declared_counts["source_pdf_count"] = (data.get("source_pdf_count"), len(sources))
+    for key, (expected, actual) in declared_counts.items():
+        if expected is not None and expected != actual:
+            content_failed = True
+            _issue(result, "errors", f"manifest {key} 期望 {expected!r}，实际 {actual!r}")
+
+    # A broken index row has no reliable episode number, so per-episode counts
+    # would only add a misleading second error.
+    if not index_rows_failed:
+        for item in episodes:
+            if isinstance(item, dict) and "scene_count" in item:
+                actual = scenes_per_episode.get(item.get("episode"), 0)
+                if item["scene_count"] != actual:
+                    content_failed = True
+                    _issue(
+                        result,
+                        "errors",
+                        f"episode {item.get('file')!r}：scene_count 期望 {item['scene_count']!r}，索引实际 {actual!r}",
+                    )
 
     if structural_failed:
         result["status"] = "ERROR"
@@ -218,7 +309,9 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     args = parser.parse_args()
     result, code = verify_manifest(args.manifest)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    # A console shows Chinese directly. Pipes and redirects get ASCII-only JSON,
+    # so it parses under any code page (PowerShell 5.1 here defaults to GBK).
+    print(json.dumps(result, ensure_ascii=not sys.stdout.isatty(), indent=2))
     return code
 
 

@@ -169,7 +169,9 @@ python -m unittest discover -s "$pluginRoot\scripts" -p "test_*.py"
 python "$pluginRoot\scripts\verify_corpus.py"
 ```
 
-`verify_corpus.py` 是只读校验器：`episodes` 的 `sha256` 证明原始提取文件未变，`scene-index.jsonl` 每条的 `text_sha256` 则按“逐行 strip、删除空行和精确 `<<<PDF_PAGE:nnn>>>` 标记、LF 拼接、UTF-8 SHA-256”计算。当前仓库应得到 24/24 集、451/451 场；校验器不会清洗或覆盖原始 episode 文件。
+`verify_corpus.py` 是只读校验器：`sources` 里 4 份定稿 PDF 的大小和 `sha256` 证明原件未变，`episodes` 的 `sha256` 证明原始提取文件未变，`scene-index.jsonl` 每条的 `text_sha256` 则按“逐行 strip、删除空行和精确 `<<<PDF_PAGE:nnn>>>` 标记、LF 拼接、UTF-8 SHA-256”计算。另会核对 manifest 里声明的 PDF 数、集数、场次总数和每集场次数。当前仓库应得到 4/4 份 PDF、24/24 集、451/451 场；校验器不会清洗或覆盖原始 episode 文件。
+
+结果是 JSON。退出码 0 表示全部一致，1 表示内容与 manifest 不符，2 表示文件或结构读不了。在 PowerShell 或命令提示符窗口里直接运行时中文正常显示；输出给管道或文件时，中文写成 `\uXXXX` 转义，任何编码下都能解析。`corpus_root_sha256` 字段暂不核对。
 
 ## 目录
 
